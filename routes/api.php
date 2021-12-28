@@ -15,9 +15,21 @@ use App\Http\Controllers\PostController;
 |
 */
 
+//API route for register new user
+Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+//API route for login user
+Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+
+//Protecting Routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function(Request $request) {
+        return auth()->user();
+    });
+    // API route for logout user
+    Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+    Route::resource('/post', PostController::class);
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::resource('/post', PostController::class);    
-
